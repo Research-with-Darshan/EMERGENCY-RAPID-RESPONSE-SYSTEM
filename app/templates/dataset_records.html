@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-heading"><p class="eyebrow">SOURCE DATA</p><h1>{{ dataset_name }}</h1><p>{{ records|length }} records · Read-only view</p></section>
+<div class="panel"><div class="table-wrap"><table><thead><tr><th>Record ID</th><th>Classification</th><th>Region</th><th>Source record</th></tr></thead><tbody>
+{% for item in records %}<tr><td>{{ item.record_id }}</td><td>{{ item.classification }}</td><td>{{ item.region or "—" }}</td><td><details><summary>Inspect record</summary><pre>{{ item.payload|tojson(indent=2) }}</pre></details></td></tr>{% else %}<tr><td colspan="4">No records imported yet.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

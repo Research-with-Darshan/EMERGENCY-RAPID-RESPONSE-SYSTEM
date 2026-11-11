@@ -1,0 +1,15 @@
+BFT-01: DETECTED (PASS)
+BFT-02: REJECTED (PASS)
+BFT-03: MITIGATED (PASS)
+PAXOS-04: SAFE_STOP (PASS)
+PAXOS-05: NO_QUORUM (PASS)
+PAXOS-06: REJECTED (PASS)
+RAFT-07: NO_QUORUM (PASS)
+RAFT-08: DEGRADED (PASS)
+RAFT-09: DEGRADED (PASS)
+E1: DENY
+E2: DENY
+E3: NO_NEW_COMMIT
+E4: MITIGATED
+E5: Regulations require emergency-response records to be retained for twenty years
+Evidence written under /Users/darshan/Downloads/ProjectDemo/ERRS_Coursework_Submission/evidence

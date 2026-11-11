@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-heading"><p class="eyebrow">DATA GOVERNANCE</p><h1>Source datasets</h1>
+<p>Imported coursework records. Dataset availability depends on your staff role.</p></section>
+<div class="panel"><table><thead><tr><th>Dataset</th><th>Records imported</th><th>Last import</th><th></th></tr></thead><tbody>
+{% for item in datasets %}<tr><td><strong>{{ item.name }}</strong></td><td>{{ item.count }}</td><td>{{ item.imported_at }}</td><td><a href="{{ url_for('dataset_records', dataset_name=item.name) }}">View records</a></td></tr>
+{% else %}<tr><td colspan="4">No datasets are available to this role.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

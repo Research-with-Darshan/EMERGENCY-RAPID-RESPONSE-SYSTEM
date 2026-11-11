@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block title %}Security demonstrations{% endblock %}{% block content %}
+<div class="page-heading"><div class="eyebrow">SECURITY POLICY & CONSENSUS</div><h1>Security demonstrations</h1><p>Policy scenarios and deterministic fault-injection teaching simulations.</p></div>
+<section class="panel"><h2>Combined policy scenarios</h2>{% for r in results %}<div class="scenario"><div><strong>{{ r['title'] }}</strong><p>{{ r['explanation'] }}</p><small>Failed checks: {{ r['failed_rules'] }}</small></div><span class="status {{ 'good' if r['decision']=='PERMIT' else 'bad' }}">{{ r['decision'] }}</span></div>{% endfor %}</section>
+<section class="panel"><h2>Nine consensus experiments</h2><p>Each action runs a deterministic simulation and writes a JSON evidence record. These are teaching models, not production consensus implementations.</p>
+{% for group, ids in [('BFT',['BFT-01','BFT-02','BFT-03']),('Paxos',['PAXOS-04','PAXOS-05','PAXOS-06']),('Raft',['RAFT-07','RAFT-08','RAFT-09'])] %}<h3>{{ group }}</h3><div class="experiment-grid">{% for id in ids %}<form method="post" action="{{ url_for('experiment',experiment_id=id) }}"><span>{{ id }}</span><button class="button secondary">Run experiment</button></form>{% endfor %}</div>{% endfor %}</section>
+{% endblock %}

@@ -1,0 +1,21 @@
+{
+  "id": "BFT-02",
+  "protocol": "BFT",
+  "fault": "Sybil attack",
+  "initial_configuration": "Four registered validators plus one unregistered identity.",
+  "fault_injected": "Sybil attack",
+  "execution_log": [
+    "SYBIL-9 is not in the validator registry and supports a conflicting intelligence value.",
+    "Accepted authenticated vote from V1 for 'intelligence-honest' (04889b0523ec).",
+    "Accepted authenticated vote from V2 for 'intelligence-honest' (04889b0523ec).",
+    "Accepted authenticated vote from V3 for 'intelligence-honest' (04889b0523ec).",
+    "Rejected SYBIL-9 on 'intelligence-forged': Unknown, disabled or revoked validator.",
+    "'intelligence-honest' has 3 distinct authenticated vote(s); quorum is 3.",
+    "Committed 'intelligence-honest'."
+  ],
+  "observed_result": "REJECTED",
+  "security_impact": "The unregistered vote was ignored. It could not commit the forged value.",
+  "mitigation": "Admit validators only through an authorised registry and drop unknown identities.",
+  "committed_under_fault": false,
+  "test_result": "PASS"
+}

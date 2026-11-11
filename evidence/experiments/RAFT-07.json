@@ -1,0 +1,28 @@
+{
+  "id": "RAFT-07",
+  "protocol": "RAFT",
+  "fault": "Network partition",
+  "initial_configuration": "Three Raft nodes. A value commits while connected, then each node is isolated.",
+  "fault_injected": "Network partition",
+  "execution_log": [
+    "Control: all three nodes can communicate.",
+    "R1 increments to term 1 and votes for itself.",
+    "R2 grants its vote to R1 in term 1.",
+    "R3 grants its vote to R1 in term 1.",
+    "R1 becomes leader with 3 of 3 votes (quorum 2).",
+    "R1 appends 'incident-status-verified' at index 1 in term 1.",
+    "R2 stores 'incident-status-verified'.",
+    "R3 stores 'incident-status-verified'.",
+    "Committed 'incident-status-verified' at index 1 with 3 of 3 copies.",
+    "Fault: each node is placed in its own partition, so no side holds a majority of the three-node membership.",
+    "R1 appends 'incident-status-closed' at index 2 in term 1.",
+    "R2 does not acknowledge the entry.",
+    "R3 does not acknowledge the entry.",
+    "Not committed: 1 copy(ies), quorum is 2."
+  ],
+  "observed_result": "NO_QUORUM",
+  "security_impact": "The isolated leader could not commit a newer incident status.",
+  "mitigation": "Commit only after a majority of the configured membership stores the entry.",
+  "committed_under_fault": false,
+  "test_result": "PASS"
+}

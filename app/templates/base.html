@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ERRS fictional emergency response coordination coursework prototype">
+  <title>{% block title %}ERRS{% endblock %} · Emergency Rapid Response System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="{{ url_for('home') }}"><span class="brand-mark">E</span><span>ERRS <small>Emergency Rapid Response System</small></span></a>
+  <nav aria-label="Main navigation">
+    <a href="{{ url_for('home') }}">Home</a><a href="{{ url_for('report') }}">Report</a><a href="{{ url_for('track') }}">Track report</a>
+     {% if current_user %}<a href="{{ url_for('datasets') }}">Staff datasets</a><a href="{{ url_for('dashboard') }}">Staff portal</a>{% if current_user['role'] in ['AUDITOR','NATIONAL_COMMANDER'] %}<a href="{{ url_for('security_dashboard') }}">Security</a>{% endif %}{% if current_user['role'] in ['AUDITOR','NATIONAL_COMMANDER','INTELLIGENCE_ANALYST'] %}<a href="{{ url_for('governance') }}">Governance</a>{% endif %}{% if current_user['role']=='AUDITOR' %}<a href="{{ url_for('audit_view') }}">Audit</a>{% endif %}<a href="{{ url_for('logout') }}">Sign out</a>{% else %}<a href="{{ url_for('login') }}">Staff login</a>{% endif %}
+  </nav>
+</header>
+<div class="prototype-banner"><strong>DEMO PROTOTYPE</strong></div>
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<section aria-live="polite" class="messages">{% for category,message in messages %}<div class="alert {{ category }}">{{ message }}</div>{% endfor %}</section>{% endif %}{% endwith %}
+  {% block content %}{% endblock %}
+</main>
+<footer><div>ERRS · Fictional educational prototype</div><div>Simulated regions: North · Central · South</div></footer>
+</body></html>

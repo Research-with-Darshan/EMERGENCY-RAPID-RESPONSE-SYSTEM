@@ -1,0 +1,18 @@
+{
+  "id": "PAXOS-06",
+  "protocol": "PAXOS",
+  "fault": "Quorum misconfiguration",
+  "initial_configuration": "Three acceptors with quorum incorrectly set to 4.",
+  "fault_injected": "Quorum misconfiguration",
+  "execution_log": [
+    "Fault: quorum is configured as 4 while only 3 acceptors are members.",
+    "Proposer ballot 1 offers 'resource-AMB-002'. Membership 3, configured quorum 4.",
+    "Configuration rejected: the quorum must be a majority and cannot exceed membership.",
+    "No acceptor stored a value after the configuration check failed."
+  ],
+  "observed_result": "REJECTED",
+  "security_impact": "An impossible quorum would stall or, if set below a majority, could break safety.",
+  "mitigation": "Reject a quorum that is not a majority of the current membership.",
+  "committed_under_fault": false,
+  "test_result": "PASS"
+}

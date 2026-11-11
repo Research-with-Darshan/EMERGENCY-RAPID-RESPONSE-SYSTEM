@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block title %}Audit log{% endblock %}{% block content %}
+<div class="page-heading"><div class="eyebrow">ASSURANCE & ACCOUNTABILITY</div><h1>Audit events</h1><p>Read-only event history with a hash-chain integrity check.</p></div>
+<section class="panel"><div class="row between"><h2>Integrity verification</h2><span class="status {{ 'good' if chain_valid else 'bad' }}">{{ 'CHAIN VALID' if chain_valid else 'TAMPER DETECTED' }}</span></div><p>A hash chain detects changes to linked events. It cannot by itself prevent an attacker with database access from rewriting the entire chain and its genesis point.</p></section>
+<section class="panel"><div class="table-wrap"><table><thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Object</th><th>Outcome</th><th>Reason</th></tr></thead><tbody>{% for e in events %}<tr><td>{{ e['created_at'] }}</td><td>{{ e['actor_role'] or 'PUBLIC' }}</td><td>{{ e['action'] }}</td><td>{{ e['object_type'] }} {{ e['object_id'] }}</td><td>{{ e['outcome'] }}</td><td>{{ e['reason'] }}</td></tr>{% else %}<tr><td colspan="6">No audit events yet.</td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

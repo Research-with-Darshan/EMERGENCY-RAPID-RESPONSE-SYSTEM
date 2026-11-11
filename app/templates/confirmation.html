@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block title %}Report received{% endblock %}{% block content %}
+<section class="panel confirmation"><div class="success-icon">✓</div><div class="eyebrow">REPORT RECEIVED</div><h1>Your demonstration report has been submitted.</h1><p>Keep either the reference number or private access token below. Either one can be used to track public-safe updates.</p>
+<div class="credential"><span>Reference number</span><strong>{{ reference }}</strong><button type="button" onclick="navigator.clipboard.writeText('{{ reference }}')">Copy</button></div>
+<div class="credential"><span>Private access token</span><strong class="token">{{ token }}</strong><button type="button" onclick="navigator.clipboard.writeText('{{ token }}')">Copy</button></div>
+<a class="button primary" href="{{ url_for('track') }}">Track this report</a></section>{% endblock %}

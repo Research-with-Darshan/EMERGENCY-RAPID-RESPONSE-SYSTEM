@@ -1,0 +1,31 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0 -- /Library/Developer/CommandLineTools/usr/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/darshan/Downloads/ProjectDemo/ERRS_Coursework_Submission
+collecting ... collected 23 items
+
+tests/test_application.py::test_public_report_and_private_tracking PASSED [  4%]
+tests/test_application.py::test_report_validation PASSED                 [  8%]
+tests/test_application.py::test_login_and_session PASSED                 [ 13%]
+tests/test_application.py::test_public_routes_are_separate_from_staff_portal PASSED [ 17%]
+tests/test_application.py::test_authorised_staff_portal_does_not_grant_dispatcher_only_access PASSED [ 21%]
+tests/test_application.py::test_report_page_signs_out_staff_session PASSED [ 26%]
+tests/test_application.py::test_home_and_tracking_sign_out_staff_session PASSED [ 30%]
+tests/test_application.py::test_tracking_shows_public_updates_only PASSED [ 34%]
+tests/test_application.py::test_public_updates_explain_arrival_and_authority_contact PASSED [ 39%]
+tests/test_application.py::test_password_hashing PASSED                  [ 43%]
+tests/test_application.py::test_assessment_and_classification PASSED     [ 47%]
+tests/test_application.py::test_views_do_not_mutate_source PASSED        [ 52%]
+tests/test_application.py::test_policy_scenarios PASSED                  [ 56%]
+tests/test_application.py::test_nine_consensus_experiments PASSED        [ 60%]
+tests/test_application.py::test_policy_read_and_write_directions PASSED  [ 65%]
+tests/test_application.py::test_dataset_classification_and_research_view PASSED [ 69%]
+tests/test_application.py::test_retention_blocks_destruction_on_hold PASSED [ 73%]
+tests/test_application.py::test_invalid_transition_and_checkpoint PASSED [ 78%]
+tests/test_application.py::test_retention_legal_hold PASSED              [ 82%]
+tests/test_application.py::test_audit_chain_after_login PASSED           [ 86%]
+tests/test_application.py::test_governance_scenarios_do_not_relax_policy PASSED [ 91%]
+tests/test_application.py::test_offline_region_does_not_invent_allocation PASSED [ 95%]
+tests/test_application.py::test_validator_admission_revocation_and_rotation PASSED [100%]
+
+============================== 23 passed in 1.17s ==============================

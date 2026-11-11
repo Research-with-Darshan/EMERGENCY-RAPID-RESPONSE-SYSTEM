@@ -1,0 +1,21 @@
+{
+  "id": "BFT-03",
+  "protocol": "BFT",
+  "fault": "Validator key compromise",
+  "initial_configuration": "Validator V4 at key version 1, then revoked, then replaced at version 2.",
+  "fault_injected": "Validator key compromise",
+  "execution_log": [
+    "V4 is registered at key version 1 and can authenticate a vote.",
+    "Version 1 signature before revocation: Authenticated.",
+    "Authorised revocation sets V4 to REVOKED.",
+    "Same signature after revocation: Unknown, disabled or revoked validator.",
+    "A replacement key is registered as version 2.",
+    "Version 2 signature: Authenticated.",
+    "Version 1 signature after rotation: Outdated key version."
+  ],
+  "observed_result": "MITIGATED",
+  "security_impact": "Messages authenticated with the revoked version were rejected.",
+  "mitigation": "Revoke the key version and require the replacement version for later votes.",
+  "committed_under_fault": false,
+  "test_result": "PASS"
+}

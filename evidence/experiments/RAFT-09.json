@@ -1,0 +1,28 @@
+{
+  "id": "RAFT-09",
+  "protocol": "RAFT",
+  "fault": "Leadership churn",
+  "initial_configuration": "Leader R1 appends locally, fails, and R2 is elected with the two remaining nodes.",
+  "fault_injected": "Leadership churn",
+  "execution_log": [
+    "R1 increments to term 1 and votes for itself.",
+    "R2 grants its vote to R1 in term 1.",
+    "R3 grants its vote to R1 in term 1.",
+    "R1 becomes leader with 3 of 3 votes (quorum 2).",
+    "R1 holds unreplicated-dispatch-order locally and loses leadership before any follower stores it.",
+    "R2 increments to term 2 and votes for itself.",
+    "R1 is partitioned or unavailable and does not vote.",
+    "R3 grants its vote to R2 in term 2.",
+    "R2 becomes leader with 2 of 3 votes (quorum 2).",
+    "R2 appends 'confirmed-dispatch-order' at index 1 in term 2.",
+    "R1 does not acknowledge the entry.",
+    "R3 stores 'confirmed-dispatch-order'.",
+    "Committed 'confirmed-dispatch-order' at index 1 with 2 of 3 copies.",
+    "The unreplicated order is absent from the new leader's committed log."
+  ],
+  "observed_result": "DEGRADED",
+  "security_impact": "An order that was never replicated was not treated as committed by the new leader.",
+  "mitigation": "Commit only entries stored by a majority. A new leader uses its own log.",
+  "committed_under_fault": false,
+  "test_result": "PASS"
+}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}Data governance{% endblock %}{% block content %}
+<div class="page-heading"><div class="eyebrow">INFORMATION GOVERNANCE</div><h1>Classification and retention</h1><p>Classification endpoints process the five original coursework datasets when they are placed in data/source/.</p></div>
+<section class="panel"><h2>Classification levels</h2><div class="level-list"><p><strong>PUBLIC</strong> — approved for broad release.</p><p><strong>OPERATIONAL</strong> — necessary for authorised response activity.</p><p><strong>SENSITIVE</strong> — personal, medical or similarly sensitive details.</p><p><strong>RESTRICTED</strong> — intelligence or national-security indicators.</p></div><p>Automated rules are indicative only. Ambiguous and high-impact records require human review.</p></section>
+<section class="panel"><h2>Retention demonstration</h2><p>Restricted records use a configurable 20-year demonstration retention period. This is not legal advice or a statement of the actual statutory schedule.</p><p><strong>Example:</strong> {{ retention['retention_years'] }} years · {{ retention['action'] }}</p><p>{{ retention['reason'] }}</p><p><strong>Audit chain:</strong> {{ 'valid' if chain_valid else 'integrity issue detected' }}</p></section>
+<section class="panel"><h2>Post-deployment scenarios</h2>
+{% for item in scenarios %}
+<div class="scenario"><div><strong>{{ item['id'] }} — {{ item['title'] }}</strong><p>{{ item['explanation'] }}</p></div><span class="status {{ 'bad' if item.get('decision') in ['DENY','REVIEW','UNSAFE_COMMIT'] else 'good' }}">{{ item.get('decision','RECORDED') }}</span></div>
+{% endfor %}
+</section>
+<section class="panel"><h2>Dataset import location</h2><code>data/source/</code><p>Expected filenames: incidents.json, responders.json, intelligence.json, dispatch.json and audit.json. Original files should remain unchanged. The classification API creates derived views without overwriting source data.</p></section>
+{% endblock %}

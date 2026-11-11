@@ -1,0 +1,26 @@
+{
+  "id": "PAXOS-04",
+  "protocol": "PAXOS",
+  "fault": "State loss",
+  "initial_configuration": "Three acceptors. A value was chosen, then every acceptor lost durable state.",
+  "fault_injected": "State loss",
+  "execution_log": [
+    "Control: three durable acceptors choose an allocation.",
+    "Proposer ballot 1 offers 'resource-AMB-001'. Membership 3, configured quorum 2.",
+    "A1 promises ballot 1 and reports accepted value 'none'.",
+    "A2 promises ballot 1 and reports accepted value 'none'.",
+    "A3 promises ballot 1 and reports accepted value 'none'.",
+    "A1 accepts 'resource-AMB-001' at ballot 1.",
+    "A2 accepts 'resource-AMB-001' at ballot 1.",
+    "A3 accepts 'resource-AMB-001' at ballot 1.",
+    "Chosen 'resource-AMB-001' with 3 acceptors.",
+    "Fault: every acceptor loses the promised ballot and the accepted value from durable storage.",
+    "Proposer ballot 2 offers 'resource-FIRE-009'. Membership 3, configured quorum 2.",
+    "A1 has no durable promised or accepted state. Unsafe to continue."
+  ],
+  "observed_result": "SAFE_STOP",
+  "security_impact": "Continuing after total loss of accepted state could choose a conflicting value.",
+  "mitigation": "Stop when durable promised or accepted state is missing.",
+  "committed_under_fault": false,
+  "test_result": "PASS"
+}

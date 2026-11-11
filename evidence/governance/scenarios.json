@@ -1,0 +1,135 @@
+[
+  {
+    "id": "E1",
+    "title": "Research organisation requests unrestricted intelligence access",
+    "datasets": [
+      "intelligence.json"
+    ],
+    "properties": [
+      "confidentiality"
+    ],
+    "decision": "DENY",
+    "failed_rules": [
+      "ACM",
+      "BELL_LAPADULA",
+      "CONTEXT"
+    ],
+    "explanation": "Access denied because ACM, BELL_LAPADULA, CONTEXT did not permit the read request.",
+    "impact": "Unrestricted release would expose suspect identifiers and threat reporting in intelligence.json. The matrix has no research role, and the purpose is not OPERATIONS."
+  },
+  {
+    "id": "E2",
+    "title": "Emergency responders request classified national-security information",
+    "datasets": [
+      "intelligence.json",
+      "responders.json"
+    ],
+    "properties": [
+      "confidentiality",
+      "operational effectiveness"
+    ],
+    "decision": "DENY",
+    "failed_rules": [
+      "ACM",
+      "BELL_LAPADULA"
+    ],
+    "explanation": "Access denied because ACM, BELL_LAPADULA did not permit the read request.",
+    "impact": "Police clearance is OPERATIONAL and the matrix does not grant intelligence:read. Granting it would collapse the boundary between response data and restricted intelligence."
+  },
+  {
+    "id": "E3",
+    "title": "A regional datacentre becomes permanently unavailable",
+    "datasets": [
+      "incidents.json",
+      "dispatch.json"
+    ],
+    "properties": [
+      "availability",
+      "integrity"
+    ],
+    "decision": "NO_NEW_COMMIT",
+    "control_committed": true,
+    "new_value_committed": false,
+    "explanation": "The three logical regions share one teaching process. Isolating every Raft node removes the majority required to commit a new incident status. The earlier committed value is not rewritten.",
+    "log": [
+      "Control: all three nodes can communicate.",
+      "R1 increments to term 1 and votes for itself.",
+      "R2 grants its vote to R1 in term 1.",
+      "R3 grants its vote to R1 in term 1.",
+      "R1 becomes leader with 3 of 3 votes (quorum 2).",
+      "R1 appends 'incident-status-verified' at index 1 in term 1.",
+      "R2 stores 'incident-status-verified'.",
+      "R3 stores 'incident-status-verified'.",
+      "Committed 'incident-status-verified' at index 1 with 3 of 3 copies.",
+      "Fault: each node is placed in its own partition, so no side holds a majority of the three-node membership.",
+      "R1 appends 'incident-status-closed' at index 2 in term 1.",
+      "R2 does not acknowledge the entry.",
+      "R3 does not acknowledge the entry.",
+      "Not committed: 1 copy(ies), quorum is 2."
+    ]
+  },
+  {
+    "id": "E4",
+    "title": "Validator credentials protecting the national audit system are compromised",
+    "datasets": [
+      "audit.json"
+    ],
+    "properties": [
+      "integrity",
+      "authenticity"
+    ],
+    "decision": "MITIGATED",
+    "before_revocation": true,
+    "revoked_key_accepted": false,
+    "replacement_accepted": true,
+    "stale_key_accepted": false,
+    "explanation": "Revocation rejects the old authenticator. A replacement version can authenticate later votes. HMAC here is a shared-key teaching substitute, not a public-key signature.",
+    "log": [
+      "V4 is registered at key version 1 and can authenticate a vote.",
+      "Version 1 signature before revocation: Authenticated.",
+      "Authorised revocation sets V4 to REVOKED.",
+      "Same signature after revocation: Unknown, disabled or revoked validator.",
+      "A replacement key is registered as version 2.",
+      "Version 2 signature: Authenticated.",
+      "Version 1 signature after rotation: Outdated key version."
+    ]
+  },
+  {
+    "id": "E5",
+    "title": "Regulations require emergency-response records to be retained for twenty years",
+    "datasets": [
+      "incidents.json",
+      "dispatch.json",
+      "responders.json",
+      "intelligence.json",
+      "audit.json"
+    ],
+    "properties": [
+      "confidentiality",
+      "storage",
+      "integrity"
+    ],
+    "within_period": {
+      "retention_years": 20,
+      "action": "RETAIN",
+      "archive_status": "ACTIVE",
+      "deletion_status": "NOT_DUE",
+      "reason": "Record remains within its classification retention period."
+    },
+    "at_expiry": {
+      "retention_years": 20,
+      "action": "DESTROY",
+      "archive_status": "ARCHIVED",
+      "deletion_status": "DESTROYED",
+      "reason": "Retention period has elapsed and no legal hold is set. Derived copies may be destroyed; source coursework files are left unchanged."
+    },
+    "legal_hold": {
+      "retention_years": 20,
+      "action": "HOLD",
+      "archive_status": "ACTIVE",
+      "deletion_status": "BLOCKED",
+      "reason": "Legal hold prevents deletion regardless of expiry."
+    },
+    "explanation": "RESTRICTED uses 20 years. PUBLIC, OPERATIONAL and SENSITIVE keep shorter demonstration periods. A legal hold blocks destruction. Original files in data/source are not deleted."
+  }
+]

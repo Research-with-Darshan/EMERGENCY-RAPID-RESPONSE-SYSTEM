@@ -1,0 +1,23 @@
+{
+  "id": "BFT-01",
+  "protocol": "BFT",
+  "fault": "Equivocation",
+  "initial_configuration": "Four registered validators, quorum 3, one primary.",
+  "fault_injected": "Equivocation",
+  "execution_log": [
+    "Control path is not used. Primary V1 signs two different values for view 1, sequence 1.",
+    "Accepted authenticated vote from V1 for 'intelligence-A' (781360723741).",
+    "Accepted authenticated vote from V1 for 'intelligence-B' (fed8e3f974b2).",
+    "Accepted authenticated vote from V2 for 'intelligence-A' (781360723741).",
+    "Accepted authenticated vote from V3 for 'intelligence-B' (fed8e3f974b2).",
+    "Equivocation: more than one value carries authenticated votes for the same view and sequence.",
+    "'intelligence-A' has 2 distinct authenticated vote(s); quorum is 3.",
+    "'intelligence-B' has 2 distinct authenticated vote(s); quorum is 3.",
+    "Conflicting authenticated proposals are not committed."
+  ],
+  "observed_result": "DETECTED",
+  "security_impact": "Integrity: a primary sent two values for one sequence. Neither value was committed.",
+  "mitigation": "Compare authenticated proposal digests and refuse to commit when they differ.",
+  "committed_under_fault": false,
+  "test_result": "PASS"
+}

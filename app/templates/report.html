@@ -1,0 +1,149 @@
+{% extends "base.html" %}{% block title %}Report an incident{% endblock %}
+{% block content %}
+<div class="page-heading"><div class="eyebrow">PUBLIC PORTAL</div><h1>Submit a demonstration report</h1><p>Use fictional information only. Fields marked required must be completed.</p></div>
+<form method="post" enctype="multipart/form-data" class="panel form-grid">
+  <label>Full name <span class="required">*</span><input name="reporter_name" maxlength="120" required value="{{ form.get('reporter_name','') }}" autocomplete="name"></label>
+  <label>Age <span class="required">*</span><input type="number" name="reporter_age" min="1" max="120" required value="{{ form.get('reporter_age','') }}" autocomplete="bday-year"></label>
+  <label>Phone number <span class="required">*</span><input type="tel" name="reporter_phone" maxlength="25" required value="{{ form.get('reporter_phone','') }}" autocomplete="tel"></label>
+  <label>Email address <span class="required">*</span><input type="email" name="reporter_email" maxlength="254" required value="{{ form.get('reporter_email','') }}" autocomplete="email"></label>
+  <label>Incident type <span class="required">*</span><select name="incident_type" required><option value="">Choose a category</option>{% for x in ['Medical','Fire','Road traffic','Public safety','Hazardous materials','Other'] %}<option {% if form.get('incident_type')==x %}selected{% endif %}>{{ x }}</option>{% endfor %}</select></label>
+  <label class="full">What happened? <span class="required">*</span><textarea name="description" rows="5" minlength="10" maxlength="4000" required>{{ form.get('description','') }}</textarea></label>
+  <label class="full">Live location <span class="required">*</span>
+    <input id="location" name="location" maxlength="250" required value="{{ form.get('location','') }}" readonly placeholder="Click “Use my live location”">
+  </label>
+  <input type="hidden" id="latitude" name="latitude" value="{{ form.get('latitude','') }}">
+  <input type="hidden" id="longitude" name="longitude" value="{{ form.get('longitude','') }}">
+  <div class="field-help full" id="location-status" role="status">Your location is only shared with the control room after you submit. Grant location access to continue.</div>
+  <div class="full"><button class="button secondary" type="button" id="get-location">Use my live location</button></div>
+  <label>People affected (if known) <input type="number" min="0" max="100000" name="people_affected" value="{{ form.get('people_affected','') }}"></label>
+  <label>Injury information (if known) <input name="injury_information" maxlength="1000" value="{{ form.get('injury_information','') }}"></label>
+  <label class="full">Hazards (if known) <textarea name="hazard_information" rows="2" maxlength="1000">{{ form.get('hazard_information','') }}</textarea></label>
+  <div class="full camera-panel">
+    <h3>Capture evidence <span class="required">*</span></h3>
+    <p class="field-help">At least one photo or video is required. Gallery and file selection are disabled; use the camera to capture evidence.</p>
+    <video id="camera-preview" class="camera-preview" autoplay muted playsinline hidden></video>
+    <canvas id="photo-canvas" hidden></canvas>
+    <div class="actions">
+      <button class="button secondary" type="button" id="start-camera">Open camera</button>
+      <button class="button secondary" type="button" id="take-photo" hidden>Take photo</button>
+      <button class="button secondary" type="button" id="start-recording" hidden>Start video</button>
+      <button class="button secondary" type="button" id="stop-recording" hidden>Stop video</button>
+    </div>
+    <div id="captured-media" class="captured-media" aria-live="polite"></div>
+    <div class="field-help" id="camera-status" role="status">No evidence captured yet.</div>
+  </div>
+  <div class="full actions"><button class="button primary" type="submit">Submit report</button><a href="{{ url_for('home') }}" class="button secondary">Cancel</a></div>
+</form>
+<script>
+  const reportForm = document.querySelector("form");
+  const locationButton = document.getElementById("get-location");
+  const locationField = document.getElementById("location");
+  const locationStatus = document.getElementById("location-status");
+  const latitudeField = document.getElementById("latitude");
+  const longitudeField = document.getElementById("longitude");
+  const cameraPreview = document.getElementById("camera-preview");
+  const photoCanvas = document.getElementById("photo-canvas");
+  const startCamera = document.getElementById("start-camera");
+  const takePhoto = document.getElementById("take-photo");
+  const startRecording = document.getElementById("start-recording");
+  const stopRecording = document.getElementById("stop-recording");
+  const cameraStatus = document.getElementById("camera-status");
+  const capturedMedia = document.getElementById("captured-media");
+  let cameraStream;
+  let recorder;
+  let recordingChunks = [];
+  const capturedFiles = [];
+
+  locationButton.addEventListener("click", () => {
+    if (!navigator.geolocation) {
+      locationStatus.textContent = "Live location is not available in this browser. Please enter the location.";
+      locationField.readOnly = false;
+      return;
+    }
+    locationButton.disabled = true;
+    locationStatus.textContent = "Requesting location permission…";
+    navigator.geolocation.getCurrentPosition((position) => {
+      const latitude = position.coords.latitude.toFixed(6);
+      const longitude = position.coords.longitude.toFixed(6);
+      latitudeField.value = latitude;
+      longitudeField.value = longitude;
+      locationField.value = `Live location (${latitude}, ${longitude})`;
+      locationStatus.textContent = "Live location captured. It will be sent securely with this report.";
+      locationButton.textContent = "Location captured";
+    }, () => {
+      locationStatus.textContent = "Location permission was not granted. Please enter the location instead.";
+      locationField.readOnly = false;
+      locationField.placeholder = "Street, town or landmark";
+      locationButton.disabled = false;
+    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 });
+  });
+
+  startCamera.addEventListener("click", async () => {
+    try {
+      cameraStream = await navigator.mediaDevices.getUserMedia({video: {facingMode: {ideal: "environment"}}, audio: true});
+      cameraPreview.srcObject = cameraStream;
+      cameraPreview.hidden = false;
+      takePhoto.hidden = false;
+      startRecording.hidden = false;
+      startCamera.hidden = true;
+      cameraStatus.textContent = "Camera is ready. Capture evidence directly from the camera.";
+    } catch (error) {
+      cameraStatus.textContent = "Camera access was not granted. No gallery or file upload is available.";
+    }
+  });
+
+  takePhoto.addEventListener("click", () => {
+    photoCanvas.width = cameraPreview.videoWidth;
+    photoCanvas.height = cameraPreview.videoHeight;
+    photoCanvas.getContext("2d").drawImage(cameraPreview, 0, 0);
+    photoCanvas.toBlob((blob) => {
+      if (capturedFiles.length >= 5) return;
+      capturedFiles.push(new File([blob], `camera-photo-${capturedFiles.length + 1}.jpg`, {type: "image/jpeg"}));
+      cameraStatus.textContent = `${capturedFiles.length} camera item(s) captured.`;
+      capturedMedia.textContent = capturedFiles.map((file) => file.name).join(", ");
+    }, "image/jpeg", 0.9);
+  });
+
+  startRecording.addEventListener("click", () => {
+    recordingChunks = [];
+    recorder = new MediaRecorder(cameraStream, {mimeType: "video/webm"});
+    recorder.ondataavailable = (event) => { if (event.data.size) recordingChunks.push(event.data); };
+    recorder.onstop = () => {
+      if (capturedFiles.length >= 5) return;
+      const blob = new Blob(recordingChunks, {type: "video/webm"});
+      capturedFiles.push(new File([blob], `camera-video-${capturedFiles.length + 1}.webm`, {type: "video/webm"}));
+      cameraStatus.textContent = `${capturedFiles.length} camera item(s) captured.`;
+      capturedMedia.textContent = capturedFiles.map((file) => file.name).join(", ");
+    };
+    recorder.start();
+    startRecording.hidden = true;
+    stopRecording.hidden = false;
+    cameraStatus.textContent = "Recording video…";
+  });
+
+  stopRecording.addEventListener("click", () => {
+    recorder.stop();
+    startRecording.hidden = false;
+    stopRecording.hidden = true;
+  });
+
+  reportForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!capturedFiles.length) {
+      cameraStatus.textContent = "Capture at least one photo or video before submitting.";
+      startCamera.focus();
+      return;
+    }
+    const formData = new FormData(reportForm);
+    capturedFiles.forEach((file) => formData.append("media", file));
+    try {
+      const response = await fetch(reportForm.action || window.location.href, {method: "POST", body: formData});
+      document.open();
+      document.write(await response.text());
+      document.close();
+    } catch (error) {
+      cameraStatus.textContent = "The report could not be sent. Please check your connection and try again.";
+    }
+  });
+</script>
+{% endblock %}

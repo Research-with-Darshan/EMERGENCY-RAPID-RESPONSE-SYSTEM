@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block title %}{{ title }}{% endblock %}{% block content %}
+<div class="page-heading"><div class="eyebrow">STAFF WORKSPACE · {{ user['role'].replace('_',' ') }}</div><h1>{{ title }}</h1><p>Review incoming reports and follow the controlled workflow.</p></div>
+<section class="panel"><div class="row between"><h2>Incidents</h2><span class="muted">{{ incidents|length }} records</span></div>
+<div class="table-wrap"><table><thead><tr><th>Reference</th><th>Type</th><th>Location</th><th>Status</th><th>Submitted</th><th></th></tr></thead><tbody>
+{% for i in incidents %}<tr><td><strong>{{ i['reference'] }}</strong></td><td>{{ i['incident_type'] }}</td><td>{{ i['location'] }}</td><td><span class="status">{{ i['status'] }}</span></td><td>{{ i['created_at'] }}</td><td><a href="{{ url_for('incident_detail',incident_id=i['id']) }}">Review</a></td></tr>{% else %}<tr><td colspan="6">No incidents have been submitted.</td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}

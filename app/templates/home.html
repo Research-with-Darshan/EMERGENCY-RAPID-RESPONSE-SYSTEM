@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block title %}Home{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="eyebrow">SECURE COORDINATION · EDUCATIONAL PROTOTYPE</div>
+  <h1>Emergency response, <span>coordinated responsibly.</span></h1>
+  <p class="lead">A coursework demonstration of incident reporting, human-led operational review, simulated service coordination and security assurance.</p>
+  <div class="actions"><a class="button primary" href="{{ url_for('report') }}">Submit a demonstration report</a><a class="button secondary" href="{{ url_for('track') }}">Track an existing report</a></div>
+</section>
+<section class="grid three">
+  <article class="panel"><div class="number">01</div><h2>Report</h2><p>Submit a demonstration incident with a description and captured location details.</p></article>
+  <article class="panel"><div class="number">02</div><h2>Review</h2><p>A rule-based assessment supports a human dispatcher. It does not make dispatch decisions.</p></article>
+  <article class="panel"><div class="number">03</div><h2>Coordinate</h2><p>Fictional police, ambulance and fire-service workflows demonstrate controlled information sharing.</p></article>
+</section>
+<section class="notice"><strong>Access model:</strong> This demonstration combines the public reporting experience and restricted staff portal in one prototype. In a real deployment, users and staff would use separate web applications to protect privileged access and information.</section>
+{% endblock %}
